@@ -7,19 +7,19 @@ export default function Layout() {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col max-w-[600px] mx-auto bg-white">
       {/* Header */}
       <header className="bg-primary-600 text-white p-4 shadow-md">
         <h1 className="text-xl font-bold text-center">Keep Your Seat</h1>
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto pb-16">
         <Outlet />
       </main>
 
-      {/* Bottom Navigation */}
-      <nav className="bg-white border-t border-gray-200 shadow-lg">
+      {/* Bottom Navigation - Fixed */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg max-w-[600px] mx-auto">
         <div className="flex justify-around items-center h-16">
           <Link
             to="/"
