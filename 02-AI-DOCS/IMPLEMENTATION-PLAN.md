@@ -414,35 +414,58 @@ This implementation plan follows a "Mock Data First" approach:
 
 ---
 
-## Phase 9: Real API Integration (Future)
+## Phase 9: Real API Integration 🔄 IN PROGRESS
 
-**Status**: ⏳ Future phase
+**Status**: 🔄 Phase 9.1 In Progress - Open-Meteo Weather API
 
 **Objective**: Replace mock services with real APIs
 
-### 9.1 Weather API Integration
-- [ ] Setup AccuWeather API
-- [ ] Replace mock weather service
-- [ ] Handle API errors and rate limits
-- [ ] Add caching strategy
+### 9.1 Weather API Integration - Open-Meteo 🔄 IN PROGRESS
+- [ ] Create weatherApiService with Open-Meteo integration
+  - Endpoint: `https://api.open-meteo.com/v1/forecast`
+  - No API key required (FREE)
+  - Parameters: latitude, longitude, current weather vars
+- [ ] Map Open-Meteo weather codes to app weather conditions
+- [ ] Replace mockWeatherService with weatherApiService
+- [ ] Implement 10-minute caching strategy
+- [ ] Handle API errors and fallbacks to mock data
+- [ ] Test with real weather data for multiple airports
 
-### 9.2 Flight Data API Integration
+**Open-Meteo API Details:**
+- **Cost**: FREE - No API key required
+- **Rate Limit**: 10,000 calls/day (free tier)
+- **Current Weather Variables**:
+  - `temperature_2m`: Temperature at 2 meters above ground
+  - `relative_humidity_2m`: Relative humidity
+  - `weather_code`: WMO Weather interpretation code
+  - `wind_speed_10m`: Wind speed at 10 meters
+- **Weather Code Mapping**: WMO codes (0-99) to app conditions
+  - 0: Clear sky → "Clear"
+  - 1-3: Partly cloudy → "Partly Cloudy"
+  - 45,48: Fog → "Foggy"
+  - 51-67: Rain/Drizzle → "Rainy"
+  - 71-77,85-86: Snow → "Snowy"
+  - 80-84: Rain showers → "Rainy"
+  - 95-99: Thunderstorm → "Stormy"
+
+### 9.2 Flight Data API Integration ⏳ FUTURE
 - [ ] Research flight data APIs (AviationStack, FlightAware, etc.)
 - [ ] Setup API keys and authentication
 - [ ] Replace mock flight service
 - [ ] Handle real-time updates
 - [ ] Error handling and fallbacks
 
-### 9.3 Backend Service (Optional)
+### 9.3 Backend Service (Optional) ⏳ FUTURE
 - [ ] Consider building backend proxy
 - [ ] Handle API rate limiting
 - [ ] Cache responses
 - [ ] User accounts (optional)
 
 **Deliverables**:
-- Fully functional app with real data
-- Robust error handling
-- Production-ready API integration
+- ✅ Real weather data from Open-Meteo
+- ⏳ Real flight data (future)
+- ✅ Robust error handling with fallbacks
+- ✅ Production-ready weather API integration
 
 ---
 

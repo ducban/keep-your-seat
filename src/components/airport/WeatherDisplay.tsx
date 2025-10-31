@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Cloud, Wind, Droplets } from 'lucide-react';
+import { Cloud, Wind, Droplets, AlertCircle } from 'lucide-react';
 import { useAirportStore } from '../../stores/airportStore';
 import { useSettingsStore } from '../../stores/settingsStore';
+import { weatherApiService } from '../../services/weatherApiService';
 import { mockWeatherService } from '../../services/mockWeatherService';
 import { Weather } from '../../types/weather';
 import { convertTemperature, formatTemperature } from '../../utils/temperatureConverter';
@@ -11,26 +12,61 @@ export default function WeatherDisplay() {
   const { temperatureUnit } = useSettingsStore();
   const [weather, setWeather] = useState<Weather | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isRealData, setIsRealData] = useState<boolean>(true);
 
   // Fetch weather data when airport changes
   useEffect(() => {
-    const weatherData = mockWeatherService.getWeather(selectedAirport);
-    setWeather(weatherData);
-    setLastUpdated(new Date());
+    const fetchWeather = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        // Try real API first
+        const weatherData = await weatherApiService.getWeatherForAirport(
+          selectedAirport
+        );
+        setWeather(weatherData);
+        setLastUpdated(new Date());
+        setIsRealData(true);
+      } catch (err) {
+        // Fallback to mock data if API fails
+        console.warn('Weather API failed, using mock data:', err);
+        const weatherData = mockWeatherService.getWeather(selectedAirport);
+        setWeather(weatherData);
+        setLastUpdated(new Date());
+        setIsRealData(false);
+        setError('Using mock data (API unavailable)');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchWeather();
   }, [selectedAirport]);
 
-  // Refresh weather every 10 minutes (simulated)
+  // Refresh weather every 10 minutes
   useEffect(() => {
-    const interval = setInterval(() => {
-      const weatherData = mockWeatherService.getWeather(selectedAirport);
-      setWeather(weatherData);
-      setLastUpdated(new Date());
+    const interval = setInterval(async () => {
+      try {
+        const weatherData = await weatherApiService.getWeatherForAirport(
+          selectedAirport
+        );
+        setWeather(weatherData);
+        setLastUpdated(new Date());
+        setIsRealData(true);
+        setError(null);
+      } catch (err) {
+        // Keep existing data if refresh fails
+        console.warn('Weather refresh failed:', err);
+      }
     }, 10 * 60 * 1000); // 10 minutes
 
     return () => clearInterval(interval);
   }, [selectedAirport]);
 
-  if (!weather) {
+  if (isLoading && !weather) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="animate-pulse">
@@ -39,6 +75,10 @@ export default function WeatherDisplay() {
         </div>
       </div>
     );
+  }
+
+  if (!weather) {
+    return null;
   }
 
   const tempInUnit = convertTemperature(weather.temperature, temperatureUnit);
@@ -98,11 +138,18 @@ export default function WeatherDisplay() {
         </div>
       </div>
 
-      {/* Mock Data Notice */}
+      {/* Data Source Notice */}
       <div className="mt-4 pt-4 border-t border-blue-200">
-        <p className="text-xs text-gray-500 italic">
-          ⚠️ Mock weather data for development
-        </p>
+        {isRealData ? (
+          <p className="text-xs text-green-600 flex items-center gap-1">
+            ✓ Real-time data from Open-Meteo API
+          </p>
+        ) : (
+          <p className="text-xs text-orange-600 flex items-center gap-1">
+            <AlertCircle className="w-3 h-3" />
+            {error || 'Using mock weather data'}
+          </p>
+        )}
       </div>
     </div>
   );
