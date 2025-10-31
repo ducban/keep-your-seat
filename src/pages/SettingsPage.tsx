@@ -48,7 +48,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-full bg-gray-50">
+    <div className="min-h-full bg-gray-50 animate-fade-in">
       {/* Header */}
       <div className="bg-primary-600 text-white p-4">
         <div className="flex items-center justify-center gap-2">

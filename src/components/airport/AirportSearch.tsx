@@ -94,10 +94,10 @@ export default function AirportSearch() {
   };
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full" role="search">
       {/* Search Input */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" aria-hidden="true" />
         <input
           ref={inputRef}
           type="text"
@@ -109,6 +109,10 @@ export default function AirportSearch() {
           }}
           placeholder="Search airport by name or IATA code..."
           className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          aria-label="Search for airports"
+          aria-autocomplete="list"
+          aria-controls="airport-search-results"
+          aria-expanded={isOpen}
         />
         {query && (
           <button
@@ -116,7 +120,7 @@ export default function AirportSearch() {
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
             aria-label="Clear search"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         )}
       </div>
@@ -125,12 +129,16 @@ export default function AirportSearch() {
       {isOpen && results.length > 0 && (
         <div
           ref={dropdownRef}
+          id="airport-search-results"
+          role="listbox"
           className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50"
         >
           {results.map((airport, index) => (
             <button
               key={airport.iata}
               onClick={() => handleSelectAirport(airport)}
+              role="option"
+              aria-selected={index === selectedIndex}
               className={`w-full px-4 py-3 text-left hover:bg-primary-50 transition-colors border-b border-gray-100 last:border-b-0 ${
                 index === selectedIndex ? 'bg-primary-50' : ''
               }`}

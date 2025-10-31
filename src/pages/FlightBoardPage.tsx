@@ -25,7 +25,7 @@ export default function FlightBoardPage() {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full animate-fade-in">
       {/* Airport Info Header */}
       <div className="bg-primary-600 text-white p-4">
         <div className="text-center">

@@ -1,24 +1,41 @@
 import { Flight, FlightBoardType } from '../../types/flight';
 import FlightRow from './FlightRow';
+import EmptyState from '../common/EmptyState';
+import { Plane, PlaneLanding } from 'lucide-react';
 
 interface FlightTableProps {
   flights: Flight[];
   type: FlightBoardType;
   onFlightClick?: (flight: Flight) => void;
+  isLoading?: boolean;
 }
 
 export default function FlightTable({
   flights,
   type,
   onFlightClick,
+  isLoading = false,
 }: FlightTableProps) {
   const isArrival = type === 'arrival';
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-12">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mb-4"></div>
+          <p className="text-gray-500">Loading flights...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (flights.length === 0) {
     return (
-      <div className="p-8 text-center text-gray-500">
-        <p>No flights available</p>
-      </div>
+      <EmptyState
+        icon={isArrival ? PlaneLanding : Plane}
+        title={`No ${isArrival ? 'arrivals' : 'departures'} found`}
+        description={`There are currently no ${isArrival ? 'arriving' : 'departing'} flights for this airport.`}
+      />
     );
   }
 

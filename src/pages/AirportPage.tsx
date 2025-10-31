@@ -5,7 +5,7 @@ import FavoritesList from '../components/airport/FavoritesList';
 
 export default function AirportPage() {
   return (
-    <div className="min-h-full bg-gray-50 p-4 space-y-6">
+    <div className="min-h-full bg-gray-50 p-4 space-y-6 animate-fade-in">
       {/* Page Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
